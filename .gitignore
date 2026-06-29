@@ -1,0 +1,25 @@
+/venv
+# Python
+__pycache__/
+*.pyc
+
+# Virtual Environment
+backend/venv/
+
+# Environment Variables
+backend/.env
+
+# SQLite
+backend/*.db
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+
+# Logs
+*.log
+
+# Alembic cache
+backend/alembic/__pycache__/
