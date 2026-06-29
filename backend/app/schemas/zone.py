@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class ZoneCreate(BaseModel):
@@ -7,8 +7,16 @@ class ZoneCreate(BaseModel):
     state: str
 
 
-class ZoneResponse(ZoneCreate):
-    id: int
+class ZoneUpdate(BaseModel):
+    zone_name: str
+    city: str
+    state: str
 
-    class Config:
-        from_attributes = True
+
+class ZoneResponse(BaseModel):
+    id: int
+    zone_name: str
+    city: str
+    state: str
+
+    model_config = ConfigDict(from_attributes=True)
