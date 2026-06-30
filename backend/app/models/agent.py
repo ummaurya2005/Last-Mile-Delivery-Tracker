@@ -9,11 +9,28 @@ class Agent(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
-    user_id = Column(Integer, ForeignKey("users.id"))
+    user_id = Column(
+        Integer,
+        ForeignKey("users.id"),
+        nullable=False
+    )
 
-    zone = Column(String, nullable=False)
+    assigned_zone_id = Column(
+        Integer,
+        ForeignKey("zones.id"),
+        nullable=False
+    )
 
-    status = Column(String, default="Available")
-    # Available / Busy
+    vehicle_type = Column(
+        String,
+        nullable=False
+    )
+
+    status = Column(
+        String,
+        default="AVAILABLE"
+    )
 
     user = relationship("User")
+
+    assigned_zone = relationship("Zone")
