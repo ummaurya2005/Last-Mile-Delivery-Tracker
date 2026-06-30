@@ -2,7 +2,10 @@ from sqlalchemy.orm import Session
 
 from app.models.agent import Agent
 from app.models.order import Order
-
+from app.utils.constants import (
+    AgentStatus,
+    OrderStatus,
+)
 
 class AssignmentService:
 
@@ -16,14 +19,14 @@ class AssignmentService:
             db.query(Agent)
             .filter(
                 Agent.assigned_zone_id == order.pickup_zone_id,
-                Agent.status == "AVAILABLE",
+                Agent.status == AgentStatus.AVAILABLE,
             )
             .first()
         )
 
         if agent is None:
 
-            order.status = "Pending Assignment"
+            order.status = OrderStatus.PENDING_ASSIGNMENT
 
             db.commit()
 
@@ -33,9 +36,9 @@ class AssignmentService:
 
         order.agent_id = agent.id
 
-        order.status = "ASSIGNED"
+        order.status = OrderStatus.ASSIGNED,
 
-        agent.status = "BUSY"
+        agent.status = AgentStatus.BUSY
 
         db.commit()
 

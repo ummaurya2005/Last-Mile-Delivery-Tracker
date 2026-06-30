@@ -5,6 +5,7 @@ from app.models.user import User
 from app.schemas.order import OrderCreate
 from app.services.rate_engine import RateEngine
 from app.services.assignment_service import AssignmentService
+from app.utils.constants import OrderStatus
 class OrderService:
 
     @staticmethod
@@ -62,7 +63,7 @@ class OrderService:
 
             delivery_charge=delivery_charge,
 
-            status="Created"
+            status=OrderStatus.CREATED
 
         )
 

@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-
+from app.utils.constants import AgentStatus
 from app.models.zone import Zone
 from app.schemas.zone import ZoneCreate
 from app.models.rate_card import RateCard
@@ -101,7 +101,7 @@ class AdminService:
             user_id=user.id,
             assigned_zone_id=agent.assigned_zone_id,
             vehicle_type=agent.vehicle_type,
-            status="AVAILABLE"
+            status=AgentStatus.AVAILABLE
         )
 
         db.add(db_agent)

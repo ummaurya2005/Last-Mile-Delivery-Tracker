@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.user import User
 from app.core.security import verify_access_token
-
+from app.utils.constants import UserRole
 
 oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl="/auth/login"
@@ -50,7 +50,7 @@ def get_current_admin(
     current_user: User = Depends(get_current_user),
 ):
 
-    if current_user.role.lower() != "admin":
+    if current_user.role.lower() != UserRole.ADMIN:
 
         raise HTTPException(
             status_code=403,
