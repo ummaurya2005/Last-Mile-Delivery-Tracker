@@ -10,11 +10,9 @@ class RateCard(Base):
     id = Column(Integer, primary_key=True, index=True)
 
     pickup_zone_id = Column(Integer, ForeignKey("zones.id"))
-
     drop_zone_id = Column(Integer, ForeignKey("zones.id"))
 
     order_type = Column(String, nullable=False)
-    # B2B / B2C
 
     rate_per_kg = Column(Float, nullable=False)
 
