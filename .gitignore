@@ -23,4 +23,3 @@ backend/*.db
 
 # Alembic cache
 backend/alembic/__pycache__/
-services/

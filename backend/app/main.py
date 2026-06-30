@@ -6,6 +6,7 @@ from app.database import Base, engine
 # Import all models so SQLAlchemy registers them
 import app.models
 from app.routers.admin import zone_router
+from app.routers.customer import order_router
 from app.routers.admin import (
     zone_router,
     rate_card_router,
@@ -26,6 +27,7 @@ app.include_router(auth.router)
 app.include_router(zone_router)
 app.include_router(rate_card_router)
 app.include_router(delivery_agent_router)
+app.include_router(order_router)
 @app.get("/")
 def home():
     return {
