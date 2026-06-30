@@ -3,8 +3,8 @@ from sqlalchemy.orm import Session
 from app.models.order import Order
 from app.models.user import User
 from app.schemas.order import OrderCreate
-
-
+from app.services.rate_engine import RateEngine
+from app.services.assignment_service import AssignmentService
 class OrderService:
 
     @staticmethod
@@ -13,18 +13,30 @@ class OrderService:
         customer: User,
         order: OrderCreate,
     ):
-
         volumetric_weight = (
-            order.length
-            * order.breadth
-            * order.height
-        ) / 5000
-
-        chargeable_weight = max(
-            order.actual_weight,
-            volumetric_weight,
+            RateEngine.calculate_volumetric_weight(
+                order.length,
+                order.breadth,
+                order.height,
+            )
         )
 
+        chargeable_weight = (
+            RateEngine.calculate_chargeable_weight(
+                order.actual_weight,
+                volumetric_weight,
+            )
+        )
+
+
+        delivery_charge = RateEngine.calculate_delivery_charge(
+        db=db,
+        pickup_zone_id=order.pickup_zone_id,
+        drop_zone_id=order.drop_zone_id,
+        order_type=order.order_type,
+        payment_type=order.payment_type,
+        chargeable_weight=chargeable_weight,
+       )
         db_order = Order(
 
             customer_id=customer.id,
@@ -48,7 +60,7 @@ class OrderService:
             order_type=order.order_type,
             payment_type=order.payment_type,
 
-            delivery_charge=0,
+            delivery_charge=delivery_charge,
 
             status="Created"
 
@@ -57,6 +69,11 @@ class OrderService:
         db.add(db_order)
         db.commit()
         db.refresh(db_order)
+
+        db_order = AssignmentService.assign_agent(
+        db,
+        db_order,
+        )
 
         return db_order
 
