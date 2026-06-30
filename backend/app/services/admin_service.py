@@ -4,6 +4,9 @@ from app.models.zone import Zone
 from app.schemas.zone import ZoneCreate
 from app.models.rate_card import RateCard
 from app.schemas.rate_card import RateCardCreate
+from app.models.agent import Agent
+from app.models.user import User
+from app.schemas.agent import AgentCreate
 
 
 class AdminService:
@@ -65,3 +68,50 @@ class AdminService:
     def get_all_rate_cards(db: Session):
 
         return db.query(RateCard).all()
+    
+
+    @staticmethod
+    def create_agent(
+        db: Session,
+        agent: AgentCreate,
+    ):
+
+        user = (
+            db.query(User)
+            .filter(User.email == agent.email)
+            .first()
+        )
+
+        if user is None:
+            raise Exception("Agent user not found")
+
+        if user.role.lower() != "agent":
+            raise Exception("User is not registered as an agent")
+
+        existing = (
+            db.query(Agent)
+            .filter(Agent.user_id == user.id)
+            .first()
+        )
+
+        if existing:
+            raise Exception("Agent profile already exists")
+
+        db_agent = Agent(
+            user_id=user.id,
+            assigned_zone_id=agent.assigned_zone_id,
+            vehicle_type=agent.vehicle_type,
+            status="AVAILABLE"
+        )
+
+        db.add(db_agent)
+        db.commit()
+        db.refresh(db_agent)
+
+        return db_agent
+
+
+    @staticmethod
+    def get_all_agents(db: Session):
+
+        return db.query(Agent).all()

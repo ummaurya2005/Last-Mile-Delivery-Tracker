@@ -1,16 +1,23 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class AgentCreate(BaseModel):
-    user_id: int
-    zone: str
+    email: str
+    assigned_zone_id: int
+    vehicle_type: str
+
+
+class AgentUpdate(BaseModel):
+    assigned_zone_id: int
+    vehicle_type: str
+    status: str
 
 
 class AgentResponse(BaseModel):
     id: int
     user_id: int
-    zone: str
+    assigned_zone_id: int
+    vehicle_type: str
     status: str
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

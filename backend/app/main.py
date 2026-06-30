@@ -9,6 +9,7 @@ from app.routers.admin import zone_router
 from app.routers.admin import (
     zone_router,
     rate_card_router,
+    delivery_agent_router,
 )
 
 # Create database tables
@@ -24,6 +25,7 @@ app = FastAPI(
 app.include_router(auth.router)
 app.include_router(zone_router)
 app.include_router(rate_card_router)
+app.include_router(delivery_agent_router)
 @app.get("/")
 def home():
     return {
