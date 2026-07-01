@@ -7,6 +7,8 @@ from app.database import Base, engine
 import app.models
 from app.routers.admin import zone_router
 from app.routers.customer import order_router
+from app.routers.agent import delivery_router
+from app.routers.tracking import router as tracking_router
 from app.routers.admin import (
     zone_router,
     rate_card_router,
@@ -28,6 +30,8 @@ app.include_router(zone_router)
 app.include_router(rate_card_router)
 app.include_router(delivery_agent_router)
 app.include_router(order_router)
+app.include_router(delivery_router)
+app.include_router(tracking_router)
 @app.get("/")
 def home():
     return {

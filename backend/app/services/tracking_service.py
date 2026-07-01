@@ -13,6 +13,27 @@ from app.utils.constants import (
 class TrackingService:
 
     @staticmethod
+    def add_tracking(
+        db: Session,
+        order_id: int,
+        status: str,
+        updated_by: int,
+        remarks: str = None,
+    ):
+        """
+        Create a tracking history record.
+        """
+
+        history = TrackingHistory(
+            order_id=order_id,
+            status=status,
+            updated_by=updated_by,
+            remarks=remarks,
+        )
+
+        db.add(history)
+
+    @staticmethod
     def update_status(
         db: Session,
         order_id: int,
@@ -30,20 +51,19 @@ class TrackingService:
         if order is None:
             raise Exception("Order not found")
 
+        # Update order status
         order.status = new_status
 
-        history = TrackingHistory(
+        # Add tracking history
+        TrackingService.add_tracking(
+            db=db,
             order_id=order.id,
             status=new_status,
             updated_by=user_id,
             remarks=remarks,
         )
 
-        db.add(history)
-
-        # If order is delivered,
-        # make agent available again
-
+        # If delivered, free the agent
         if (
             new_status == OrderStatus.DELIVERED
             and order.agent_id is not None
@@ -56,11 +76,9 @@ class TrackingService:
             )
 
             if agent:
-
                 agent.status = AgentStatus.AVAILABLE
 
         db.commit()
-
         db.refresh(order)
 
         return order
